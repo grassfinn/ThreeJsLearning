@@ -1,0 +1,55 @@
+import * as three from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+const renderer = new three.WebGLRenderer();
+
+// set size of canvas
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+// inject space into the dom
+document.body.appendChild(renderer.domElement);
+
+const scene = new three.Scene();
+
+const aspectRatio = window.innerWidth / window.innerHeight;
+
+// cameras
+// perspective camera(fov, aspectRatio,near,far) most FoV is between 40-80
+const camera = new three.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+
+// !orbitControls
+// control with mouse
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+// must update every time we change the camera position
+orbitControls.update();
+
+const axesHelper = new three.AxesHelper();
+scene.add(axesHelper);
+
+// camera position default is 0,0,0
+camera.position.set(0, 2, 5);
+// camera.position.x
+// camera.position.y
+
+// !CREATION OF SHAPES
+// geo-skeleton/shape
+const boxGeo = new three.BoxGeometry();
+// skin-material/skin
+const boxMaterial = new three.MeshBasicMaterial({ color: 0x00ff00 });
+// cover shape with material
+const box = new three.Mesh(boxGeo, boxMaterial);
+scene.add(box);
+
+// ?need a function that will tell the box to rotate
+function animate(x, y) {
+  box.rotation.x += x;
+  box.rotation.y += y;
+  renderer.render(scene, camera);
+}
+
+// !setAnimatinoLoop loops the function that is envokes
+// if you want to use params you must make it an Anonymous function so that it is calling the function rather than running it
+// ?render the scene and camera
+renderer.setAnimationLoop(() => animate(0.01, 0.01));
+
+// orthographic camera(left,right,up,down,near,far) 2dscenes
+// most apsect ratio is cavasWidth/canvasHeight1
