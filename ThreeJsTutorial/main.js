@@ -1,4 +1,6 @@
 import * as three from 'three';
+import * as dat from 'dat.gui';
+import { MeshBasicMaterial } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 const renderer = new three.WebGLRenderer();
 
@@ -39,10 +41,63 @@ const boxMaterial = new three.MeshBasicMaterial({ color: 0x00ff00 });
 const box = new three.Mesh(boxGeo, boxMaterial);
 scene.add(box);
 
+const plainGeo = new three.PlaneGeometry(30, 30);
+// check for other material properties
+const plainMaterial = new three.MeshBasicMaterial({
+  color: 0xffffff,
+  side: three.DoubleSide,
+});
+const plain = new three.Mesh(plainGeo, plainMaterial);
+scene.add(plain);
+
+// ? find eqution or why the numbers add this way?
+plain.rotation.x = -0.5 * Math.PI;
+
+const sphereGeo = new three.SphereGeometry(2, 5, 5);
+// standard mesh needs a light source, if its black it need light
+const sphereMaterial = new MeshBasicMaterial({
+  color: 0x0000ff,
+  wireframe: false,
+});
+const sphere = new three.Mesh(sphereGeo, sphereMaterial);
+scene.add(sphere);
+sphere.position.set(2, 2);
+// !Grid Helper
+const gridHelper = new three.GridHelper(30);
+scene.add(gridHelper);
+
+// ! Dat.gui
+const gui = new dat.GUI();
+
+const options = {
+  sphereColor: '#ffea00',
+  wireframe: false,
+  speed: 0.01
+};
+
+gui.addColor(options, 'sphereColor').onChange((e) => {
+  sphere.material.color.set(e);
+});
+
+gui.add(options, 'wireframe').onChange((e) => {
+  sphere.material.wireframe = e;
+});
+
+gui.add(options, 'speed',0.01,0.05).onChange((e) => {
+  sphere.material.wireframe = e;
+});
+// ! bounce
+let step = 0;
+
 // ?need a function that will tell the box to rotate
 function animate(x, y) {
   box.rotation.x += x;
   box.rotation.y += y;
+
+  step += options.speed;
+  // look out how this formula works
+  sphere.position.y = 10 * Math.abs(Math.sin(step))
+
   renderer.render(scene, camera);
 }
 
