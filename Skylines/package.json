@@ -1,5 +1,19 @@
 {
-  "dependencies": {
-    "three": "^0.148.0"
-  }
+    "main": "index.js",
+    "scripts": {
+        "dev": "npx parcel index.html",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prettify-check": "npx prettier --check ."
+    },
+    "devDependencies": {
+        "parcel": "^2.8.3",
+        "pre-commit": "^1.2.2"
+    },
+    "pre-commit": [
+      "prettify-check"
+    ],
+    "dependencies": {
+        "dat.gui": "^0.7.9",
+        "three": "^0.148.0"
+    }
 }
