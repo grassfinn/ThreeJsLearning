@@ -44,47 +44,11 @@ const options = {
     penumbra: 0,
     intensity: 1,
 };
-gui.add(options, 'angle', 0, 0.1);
-gui.add(options, 'penumbra', 0, 1);
-gui.add(options, 'intensity', 0, 1);
-
 const ambientLight = new AmbientLight(0x333333);
 
 const skyLineSpotLight = new SkyLineSpotLight();
-
-//! randomly create skyscrapers
-const buildingArr = [];
-function createSkyScrapers(amount = 5) {
-    console.log(typeof amount);
-    if (typeof amount !== 'number') {
-        alert('Something went wrong, amount is supposed to be a number');
-        return 1;
-    }
-    for (let i = 0; i < amount; i++) {
-        // Creating random numbers for the x,y,z
-        const x = THREE.MathUtils.randFloatSpread(20);
-        const y = THREE.MathUtils.randFloatSpread(350);
-        const z = THREE.MathUtils.randFloatSpread(10);
-
-        const buildingGeo = new THREE.BoxGeometry(x, y, z);
-        const buildingMesh = new THREE.MeshBasicMaterial({
-            color: 0x0000ff,
-            wireframe: true,
-        });
-        const building = new THREE.Mesh(buildingGeo, buildingMesh);
-
-        building.position.set(x, y, z);
-        scene.add(building);
-        buildingArr.push(building);
-        console.log(building.position.x);
-        // need to be able to figure out the x and y position of the plane so we can place the building randomly on the plane
-    }
-    // ? I returned the building array in case we can do something with that data
-    return buildingArr;
-}
-
-createSkyScrapers();
-console.log(buildingArr);
+gui.add(options, 'angle', 0, 0.1);
+gui.add(options, 'penumbra', 0, 1);
 
 const plane = new Plane();
 const background = new Plane(35, 13, 'vertical', fuji);
@@ -101,6 +65,64 @@ scene.add(
     skyLineSpotLight.spotLight,
     skyLineSpotLight.helper
 );
+gui.add(options, 'intensity', 0, 1);
+
+//! randomly create skyscrapers
+const buildingArr = [];
+function createSkyScrapers(amount = 5) {
+    console.log(typeof amount);
+    if (typeof amount !== 'number') {
+        alert('Something went wrong, amount is supposed to be a number');
+        return 1;
+    }
+    for (let i = 0; i < amount; i++) {
+        // Creating random numbers for the x,y,z
+        let x = 1;
+        let y = 10;
+        let z = 10;
+
+        let width = Math.abs(THREE.MathUtils.randFloatSpread(3));
+        let height = Math.abs(THREE.MathUtils.randFloatSpread(8));
+        let depth = Math.abs(THREE.MathUtils.randFloatSpread(5));
+
+        if (buildingArr.length !== 0) {
+            x = THREE.MathUtils.randFloatSpread(
+                plane.geometry.parameters.width / 2
+            );
+            y = Math.abs(THREE.MathUtils.randFloatSpread(35));
+            z = THREE.MathUtils.randFloatSpread(35);
+
+            const lastBuilding = buildingArr[buildingArr.length - 1];
+            const lastBuildingX = lastBuilding.geometry.parameters.width;
+            const lastBuildingZ = lastBuilding.geometry.parameters.depth;
+            console.log('X', lastBuildingX, 'Z', lastBuildingZ);
+
+            x += lastBuildingX + lastBuilding.geometry.parameters.width;
+            z += lastBuildingZ + lastBuilding.geometry.parameters.depth;
+        }
+
+        const buildingGeo = new THREE.BoxGeometry(width, height, depth);
+        console.log({ buildingGeo });
+        const buildingMesh = new THREE.MeshBasicMaterial({
+            color: 0x0000ff,
+            wireframe: false,
+        });
+        const building = new THREE.Mesh(buildingGeo, buildingMesh);
+        // !find out how to set the position on the base of the plane
+        const baseHeight = buildingGeo.parameters.height / 2;
+
+        building.position.set(x, baseHeight, z);
+        scene.add(building);
+        buildingArr.push(building);
+        // console.log(building.position.x);
+        // need to be able to figure out the x and y position of the plane so we can place the building randomly on the plane
+    }
+    // ? I returned the building array in case we can do something with that data
+    return buildingArr;
+}
+
+createSkyScrapers(50);
+console.log(buildingArr);
 
 function animate() {
     skyLineSpotLight.angle = options.angle;
