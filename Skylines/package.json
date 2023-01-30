@@ -10,7 +10,7 @@
         "pre-commit": "^1.2.2"
     },
     "pre-commit": [
-      "prettify-check"
+        "prettify-check"
     ],
     "dependencies": {
         "dat.gui": "^0.7.9",
