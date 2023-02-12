@@ -21,6 +21,10 @@ document.body.appendChild(renderer.domElement);
 
 const scene = new Scene();
 
+const SCENE_SIZE=35;
+const BUILDING_MAX_WIDTH = 2;
+const BUILDING_MAX_DEPTH = 2;
+
 const camera = new PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -33,7 +37,7 @@ const orbit = new OrbitControls(camera, renderer.domElement);
 orbit.update();
 
 const axesHelper = new AxesHelper(5);
-const gridHelper = new GridHelper(35);
+const gridHelper = new GridHelper(SCENE_SIZE);
 
 // MAKE THE COLOR SETABLE FROM THE BROWSER FOR DEBUG
 const gui = new dat.GUI();
@@ -50,9 +54,10 @@ gui.add(options, 'angle', 0, 0.1);
 gui.add(options, 'penumbra', 0, 1);
 
 const plane = new Plane();
-const background = new Plane(35, 13, 'vertical', fuji);
-background.translateZ(17.5);
-background.translateY(6.5);
+const backgroundHeight = 13;
+const background = new Plane(SCENE_SIZE, backgroundHeight, 'vertical', fuji);
+background.translateZ(SCENE_SIZE / 2);
+background.translateY(backgroundHeight / 2);
 
 // You can add object to the scene, by default they are added in the center
 scene.add(
@@ -68,49 +73,32 @@ gui.add(options, 'intensity', 0, 1);
 
 //! randomly create skyscrapers
 const buildingArr = [];
-function createSkyScrapers(amount = 5) {
-    console.log(typeof amount);
+
+function createSkyScrapers(amount = 50) {
     if (typeof amount !== 'number') {
         alert('Something went wrong, amount is supposed to be a number');
         return 1;
     }
     for (let i = 0; i < amount; i++) {
         // Creating random numbers for the x,y,z
-        let x = 1;
-        let y = 10;
-        let z = 10;
+        let x = THREE.MathUtils.randFloat(-((SCENE_SIZE / 2) - BUILDING_MAX_DEPTH), (SCENE_SIZE / 2) - BUILDING_MAX_DEPTH);
+        let y = THREE.MathUtils.randFloat(-((SCENE_SIZE / 2) - BUILDING_MAX_WIDTH), (SCENE_SIZE / 2) - BUILDING_MAX_WIDTH);
+        let z = 100;
 
-        let width = Math.abs(THREE.MathUtils.randFloatSpread(3));
-        let height = Math.abs(THREE.MathUtils.randFloatSpread(8));
-        let depth = Math.abs(THREE.MathUtils.randFloatSpread(5));
+        let width = Math.abs(THREE.MathUtils.randFloat(1, BUILDING_MAX_WIDTH));
+        let height = Math.abs(THREE.MathUtils.randFloat(3, 8));
+        let depth = Math.abs(THREE.MathUtils.randFloat(1, BUILDING_MAX_DEPTH));
 
-        if (buildingArr.length !== 0) {
-            x = THREE.MathUtils.randFloatSpread(
-                plane.geometry.parameters.width / 2
-            );
-            y = Math.abs(THREE.MathUtils.randFloatSpread(35));
-            z = THREE.MathUtils.randFloatSpread(35);
-
-            const lastBuilding = buildingArr[buildingArr.length - 1];
-            const lastBuildingX = lastBuilding.geometry.parameters.width;
-            const lastBuildingZ = lastBuilding.geometry.parameters.depth;
-            console.log('X', lastBuildingX, 'Z', lastBuildingZ);
-
-            x += lastBuildingX + lastBuilding.geometry.parameters.width;
-            z += lastBuildingZ + lastBuilding.geometry.parameters.depth;
-        }
-
-        const building = new RandomBuiding({width, height, depth, x, y, z});
+        const building = new RandomBuiding({width, height, depth, x, y});
         scene.add(building);
         buildingArr.push(building);
-        // console.log(building.position.x);
         // need to be able to figure out the x and y position of the plane so we can place the building randomly on the plane
     }
     // ? I returned the building array in case we can do something with that data
     return buildingArr;
 }
 
-createSkyScrapers(50);
+createSkyScrapers();
 
 function animate() {
     skyLineSpotLight.angle = options.angle;

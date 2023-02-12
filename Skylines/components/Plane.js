@@ -1,13 +1,14 @@
-import { PlaneGeometry, MeshStandardMaterial, Mesh, DoubleSide, TextureLoader } from 'three';
-
+import { PlaneGeometry, MeshStandardMaterial, Mesh, BackSide, TextureLoader } from 'three';
+import {SCENE_SIZE} from '../index';
 export class Plane {
     mesh;
 
-    constructor(width=35, height=35, orientation='horizontal', image=null) {
+    constructor(width=SCENE_SIZE, height=SCENE_SIZE, orientation='horizontal', image=null) {
         const geometry = new PlaneGeometry(width, height);
         const material = new MeshStandardMaterial({
             color: 0xffffffff,
-            side: DoubleSide,
+            opacity: 1,
+            side: BackSide,
             map: image == null ? undefined : new TextureLoader().load(image)
         });
         this.mesh = new Mesh(geometry, material);
