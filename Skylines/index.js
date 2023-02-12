@@ -5,14 +5,13 @@ import {
     PerspectiveCamera,
     AxesHelper,
     GridHelper,
-    CubeTextureLoader,
-    sRGBEncoding,
 } from 'three';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as dat from 'dat.gui';
 import { SkyLineSpotLight } from './components/SkyLineSpotLight';
 import { Plane } from './components/Plane';
+import {RandomBuiding} from './components/RandomBuilding';
 import fuji from './pictures/fuji1.jpg';
 
 const renderer = new WebGL1Renderer();
@@ -101,17 +100,7 @@ function createSkyScrapers(amount = 5) {
             z += lastBuildingZ + lastBuilding.geometry.parameters.depth;
         }
 
-        const buildingGeo = new THREE.BoxGeometry(width, height, depth);
-        console.log({ buildingGeo });
-        const buildingMesh = new THREE.MeshBasicMaterial({
-            color: 0x0000ff,
-            wireframe: false,
-        });
-        const building = new THREE.Mesh(buildingGeo, buildingMesh);
-        // !find out how to set the position on the base of the plane
-        const baseHeight = buildingGeo.parameters.height / 2;
-
-        building.position.set(x, baseHeight, z);
+        const building = new RandomBuiding({width, height, depth, x, y, z});
         scene.add(building);
         buildingArr.push(building);
         // console.log(building.position.x);
@@ -122,12 +111,14 @@ function createSkyScrapers(amount = 5) {
 }
 
 createSkyScrapers(50);
-console.log(buildingArr);
 
 function animate() {
     skyLineSpotLight.angle = options.angle;
     skyLineSpotLight.penumbra = options.penumbra;
     skyLineSpotLight.intensity = options.intensity;
+    skyLineSpotLight.spotLight.position.y = 30 * Math.sin(Date.now() / 10000);
+    skyLineSpotLight.spotLight.position.z = 30 * Math.cos(Date.now() / 10000);
+
     skyLineSpotLight.helper.update();
 
     renderer.render(scene, camera);
