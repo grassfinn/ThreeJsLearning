@@ -58,11 +58,11 @@ background.translateY(6.5);
 scene.add(
     axesHelper,
     gridHelper,
-    plane,
     background,
     ambientLight,
     skyLineSpotLight.spotLight,
-    skyLineSpotLight.helper
+    skyLineSpotLight.helper,
+    plane
 );
 gui.add(options, 'intensity', 0, 1);
 

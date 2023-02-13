@@ -1,5 +1,4 @@
 import { PlaneGeometry, MeshStandardMaterial, Mesh, DoubleSide, TextureLoader } from 'three';
-
 export class Plane {
     mesh;
 
@@ -7,6 +6,8 @@ export class Plane {
         const geometry = new PlaneGeometry(width, height);
         const material = new MeshStandardMaterial({
             color: 0xffffffff,
+            side: DoubleSide,
+            opacity: 1,
             side: DoubleSide,
             map: image == null ? undefined : new TextureLoader().load(image)
         });
