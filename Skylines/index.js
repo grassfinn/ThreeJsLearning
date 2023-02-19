@@ -102,6 +102,23 @@ createSkyScrapers(50);
 function animate() {
     skyLineSpotLight.spotLight.position.y = 30 * Math.sin(Date.now() / 10000);
     skyLineSpotLight.spotLight.position.z = 30 * Math.cos(Date.now() / 10000);
+    skyLineSpotLight.spotLight.intensity = (skyLineSpotLight.spotLight.position.y / 15);
+    skyLineSpotLight.needsUpdate = true;
+    if (skyLineSpotLight.spotLight.position.y < 0 && plane.receiveShadow === true) {
+        buildingArr.forEach(mesh => {
+            mesh.receiveShadow = false;
+            mesh.material.needsUpdate = true;
+        });
+        plane.material.needsUpdate = true;
+    }
+    if (skyLineSpotLight.spotLight.position.y > 0 && plane.receiveShadow === false) {
+        buildingArr.forEach(mesh => {
+            mesh.receiveShadow = true;
+            mesh.material.needsUpdate = true;
+        })
+        plane.receiveShadow = true;
+        plane.material.needsUpdate = true;
+    }
 
     skyLineSpotLight.helper.update();
 
