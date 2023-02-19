@@ -21,13 +21,12 @@ export class RandomBuiding {
             options.depth
         );
         const material = new THREE.MeshStandardMaterial({
-            // color: 0x0000ff,
             wireframe: false,
             map: new TextureLoader().load(skins[randomSkin]),
         });
         this.mesh = new THREE.Mesh(this.geometry, material);
         const baseHeight = this.geometry.parameters.height / 2;
-        this.mesh.position.set(options.x, baseHeight, options.z);
+        this.mesh.position.set(options.x, baseHeight, options.y);
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
         return this.mesh;

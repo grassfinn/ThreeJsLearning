@@ -2,13 +2,12 @@ import { PlaneGeometry, MeshStandardMaterial, Mesh, DoubleSide, TextureLoader } 
 export class Plane {
     mesh;
 
-    constructor(width=35, height=35, orientation='horizontal', image=null) {
+    constructor({width=35, height=35, orientation='horizontal', image=null, receiveShadow=false}) {
         const geometry = new PlaneGeometry(width, height);
         const material = new MeshStandardMaterial({
-            color: 0xffffffff,
+            color: 0x717171,
             side: DoubleSide,
             opacity: 1,
-            side: DoubleSide,
             map: image == null ? undefined : new TextureLoader().load(image)
         });
         this.mesh = new Mesh(geometry, material);
@@ -17,7 +16,7 @@ export class Plane {
         } else {
             this.mesh.rotateY(-0.5 * Math.PI);
         }
-        this.mesh.receiveShadow = true;
+        this.mesh.receiveShadow = receiveShadow;
         return this.mesh;
     }
 }
