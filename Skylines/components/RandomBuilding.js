@@ -9,7 +9,7 @@ import five from '../pictures/buildingSkins/5.jpg';
 
 
 const skins = [one, two, four];
-export class RandomBuiding {
+export class RandomBuilding {
     mesh;
     geometry;
     

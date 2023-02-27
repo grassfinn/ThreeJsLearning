@@ -11,7 +11,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as dat from 'dat.gui';
 import { SkyLineSpotLight } from './components/SkyLineSpotLight';
 import { Plane } from './components/Plane';
-import {RandomBuiding} from './components/RandomBuilding';
+import {RandomBuilding} from './components/RandomBuilding';
 import fuji from './pictures/fuji1.jpg';
 
 const renderer = new WebGL1Renderer();
@@ -79,16 +79,19 @@ function createSkyScrapers(amount = 50) {
         return 1;
     }
     for (let i = 0; i < amount; i++) {
+        const safeSpace = SCENE_SIZE / 2;
+        const safeDepth = safeSpace  - BUILDING_MAX_DEPTH
+        const safeWidth = safeSpace  - BUILDING_MAX_WIDTH
         // Creating random numbers for the x,y,z
-        let x = THREE.MathUtils.randFloat(-((SCENE_SIZE / 2) - BUILDING_MAX_DEPTH), (SCENE_SIZE / 2) - BUILDING_MAX_DEPTH);
-        let y = THREE.MathUtils.randFloat(-((SCENE_SIZE / 2) - BUILDING_MAX_WIDTH), (SCENE_SIZE / 2) - BUILDING_MAX_WIDTH);
-        let z = 0;
+        const x = THREE.MathUtils.randFloat(-safeDepth, safeDepth);
+        const y = THREE.MathUtils.randFloat(-safeWidth, safeWidth);
+        const z = 0;
 
         let width = Math.abs(THREE.MathUtils.randFloat(1, BUILDING_MAX_WIDTH));
         let height = Math.abs(THREE.MathUtils.randFloat(3, 8));
         let depth = Math.abs(THREE.MathUtils.randFloat(1, BUILDING_MAX_DEPTH));
 
-        const building = new RandomBuiding({width, height, depth, x, y, z});
+        const building = new RandomBuilding({width, height, depth, x, y, z});
         scene.add(building);
         buildingArr.push(building);
         // need to be able to figure out the x and y position of the plane so we can place the building randomly on the plane
